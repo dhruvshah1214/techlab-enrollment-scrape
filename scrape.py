@@ -8,28 +8,39 @@ scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
 
 #TODO: use techlab email credentials. ALSO make sure you share the google document with your service account email.
-credentials = ServiceAccountCredentials.from_json_keyfile_name('techlab-scrape-auth.json', scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('auth.json', scope)
 
 gc = gspread.authorize(credentials)
 
 
-#TODO: replace with prewritten URL or read URL from pickle file that saves on first run.
-sheet_url = raw_input("Make sure all the tables are in one file, with the sheets having following names: summer_enrollment, charge, schedule, integrated-view. Enter the spreadsheet's URL:")
+#TODO: enter URLS
+# ENROLLMENT & CHARGE SHEETS URL
+sheet1_url = ""
+
+# SCHEDULE SHEET URL
+sheet2_url = ""
+
+# Integrated view sheet URL - URL for your output sheet
+int_sheet_url = ""
 
 
-sheet = gc.open_by_url(sheet_url)
+sheet = gc.open_by_url(sheet1_url)
+schedule_sheet = gc.open_by_url(sheet2_url)
+int_sheet = gc.open_by_url(int_sheet_url)
 
 
 summer = sheet.worksheet("summer_enrollment")
 charge = sheet.worksheet("charge")
-schedule = sheet.worksheet("schedule")
+schedule = schedule_sheet.worksheet("schedule")
+
+#write
+integrated_view_sheet = int_sheet.worksheet("integrated-view")
 
 enrollment_df = pandas.DataFrame(summer.get_all_records())
 charge_df = pandas.DataFrame(charge.get_all_records())
 schedule_df = pandas.DataFrame(schedule.get_all_records())
 
-#write
-integrated_view_sheet = sheet.worksheet("integrated-view")
+
 
 #print(schedule_df)
 
